@@ -27,6 +27,5 @@ require( [ 'snake', 'fruit' ], function( Snake, Fruit ) {
 
     // Spawn a new fruit
     var fruit = new Fruit();
-
-} () );
+} );
 
