@@ -1,5 +1,6 @@
 require( [ 'snake', 'fruit' ], function( Snake, Fruit ) {
     "use strict";
+
     var cvs = document.getElementById( 'cvs' ),
         ctx = cvs.getContext( '2d' );
 
