@@ -1,4 +1,4 @@
-require( [ 'snake', 'fruit' ], function( Snake, Fruit ) {
+require( [ 'Game' ], function( Game ) {
     "use strict";
 
     var cvs = document.getElementById( 'cvs' ),
@@ -15,17 +15,10 @@ require( [ 'snake', 'fruit' ], function( Snake, Fruit ) {
     ctx.strokeStyle = '#000';
     ctx.strokeRect( 0, 0, width, height );
 
-    // Spawn a snake
-    var snake = new Snake();
+    // Spawn a new game
+    var game = new Game( ctx );
 
-    // Add the event listeners for the arrow keys
-    window.addEventListener( 'keydown', function( e ) {
-        if ( !!~[ 37, 38, 39, 40 ].indexOf( e.keyCode ) ) {
-            snake.move.bind( this );
-        }
-    } );
-
-    // Spawn a new fruit
-    var fruit = new Fruit();
+    // And start the game
+    game.start();
 } );
 
