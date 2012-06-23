@@ -1,10 +1,9 @@
 define( function() {
     "use strict";
 
-    function Snake( ctx, direction ) {
+    function Snake( ctx ) {
         this.ctx = ctx;
         this.length = 1;
-        this.direction = direction;
         this.position = {
             x: 150,
             y: 150
@@ -21,7 +20,7 @@ define( function() {
         },
 
         draw: function() {
-            requestAnimationFrame( this.draw );
+            requestAnimationFrame( this.draw.bind( this ) );
         }
     };
 
