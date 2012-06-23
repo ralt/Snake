@@ -17,6 +17,7 @@ define( function() {
 
         move: function( direction ) {
             this.direction = direction;
+            this.shifts.push( this.position );
         },
 
         draw: function() {
