@@ -24,7 +24,6 @@ define( [ 'Snake', 'Fruit' ], function( Snake, Fruit ) {
 
             // Add the event listener on the arrow keys
             window.addEventListener( 'keydown', handleKeys.bind( this ) );
-
         },
     };
 
