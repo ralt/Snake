@@ -20,14 +20,19 @@ define( [ 'Snake', 'Fruit' ], function( Snake, Fruit ) {
             };
 
             // Spawn a new snake
-            this.snake = new Snake( this.ctx );
+            this.snake = new Snake( this.ctx, this );
 
             // Add the event listener on the arrow keys
             window.addEventListener( 'keydown', handleKeys.bind( this ) );
         },
+
+        stop: function() {
+            throw new Error( 'Game over!' );
+        }
     };
 
     function handleKeys( e ) {
+        /*jshint validthis:true*/
         this.snake.move( this.keyCodes[ e.keyCode ] );
     }
 

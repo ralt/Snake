@@ -4,7 +4,7 @@ define( function() {
     function Fruit() {}
 
     Fruit.prototype = {
-        constructor: Fruit,
+        constructor: Fruit
     };
 
     return Fruit;
