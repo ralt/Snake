@@ -10,7 +10,7 @@ var width = 300,
 cvs.width = width;
 cvs.height = height;
 
-var Game = require( './Game' );
+var Game = require( './Game.js' );
 
 // Spawn a new game
 var game = new Game( ctx );

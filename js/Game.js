@@ -1,16 +1,13 @@
 "use strict";
 
-var Snake = require( './Snake' ),
-    Fruit = require( './Fruit' );
+var Snake = require( './Snake.js' ),
+    Fruit = require( './Fruit.js' );
 
 function Game( ctx ) {
     this.score = 0;
     this.ctx = ctx;
 
-    // The game board
-    this.board = [];
-
-    // Build it!
+    // Build the board
     this.buildBoard();
 }
 
@@ -19,13 +16,16 @@ Game.prototype = {
 
     buildBoard: function() {
         var width = this.ctx.canvas.width,
-            height = this.ctx.canvas.height;
+            height = this.ctx.canvas.height,
+            arr = [];
+
+        this.board = [];
 
         while( width-- ) {
-            this.board[ width ] = [];
-            while( height-- ) {
-                this.board[ width ][ height ] = 0;
-            }
+            arr.push( 0 );
+        }
+        while( height-- ) {
+            this.board.push( arr.slice( 0 ) );
         }
     },
 
