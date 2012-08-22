@@ -6,28 +6,10 @@ var Snake = require( './Snake.js' ),
 function Game( ctx ) {
     this.score = 0;
     this.ctx = ctx;
-
-    // Build the board
-    this.board = [];
-    this.buildBoard();
 }
 
 Game.prototype = {
     constructor: Game,
-
-    buildBoard: function() {
-        var width = this.ctx.canvas.width,
-            height = this.ctx.canvas.height,
-            arr = [];
-
-
-        while( width-- ) {
-            arr.push( 0 );
-        }
-        while( height-- ) {
-            this.board.push( arr.slice( 0 ) );
-        }
-    },
 
     start: function() {
         // Have a mapping object and pass the correct string
