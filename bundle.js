@@ -528,6 +528,15 @@ Snake.prototype = {
         pos.forEach( function( p ) {
             ctx.fillRect( p.x, p.y, 1, 1 );
         }, this );
+
+        // Check if we're out of bounds
+        var lastPos = pos[ pos.length -1 ];
+        if (
+            ( lastPos.x < 1 || lastPos.x > 299 ) ||
+            ( lastPos.y < 1 || lastPos.y > 299 )
+        ) {
+            this.game.stop( this.reqID );
+        }
     }
 };
 
