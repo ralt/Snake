@@ -27,7 +27,7 @@ function readFiles(dir) {
 }
 
 function build() {
-    console.log("building")
+    console.log("A change happened. Rebuilding.")
     child_process.exec("browserify -e js/main.js -o bundle.js")
 }
 

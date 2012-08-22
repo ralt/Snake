@@ -1,7 +1,7 @@
 "use strict";
 
 var Snake = require( './Snake.js' ),
-    Fruit = require( './Fruit.js' );
+    Food = require( './Food.js' );
 
 function Game( ctx ) {
     this.score = 0;
@@ -26,11 +26,24 @@ Game.prototype = {
             '40': 'bottom'
         };
 
+        // Spawn a new food
+        this.food = new Food( this.ctx, this );
+
         // Spawn a new snake
         this.snake = new Snake( this.ctx, this );
 
-        // Spawn a new fruit
-        this.fruit = new Fruit( this.ctx, this );
+        var that = this;
+        // Listen for when a snake eats a food
+        this.evt.on( 'I ate some food', function() {
+            // Increase the score
+            that.score++;
+
+            // Clear the current food
+            that.food.clear();
+
+            // And spawn a new one
+            that.food = new Food( that.ctx, that );
+        });
 
         // Add the event listener on the arrow keys
         window.addEventListener( 'keydown', handleKeys.bind( this ) );
@@ -38,7 +51,7 @@ Game.prototype = {
 
     stop: function( reqID ) {
         window.cancelAnimationFrame( reqID );
-        alert( 'Game over!' );
+        alert( 'Game over! You got ' + this.score + ' points!' );
     }
 };
 

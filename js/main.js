@@ -3,8 +3,8 @@
 var cvs = document.getElementById( 'cvs' ),
     ctx = cvs.getContext( '2d' );
 
-var width = 300,
-    height = 300;
+var width = 200,
+    height = 200;
 
 // Set the properties of the canvas
 cvs.width = width;

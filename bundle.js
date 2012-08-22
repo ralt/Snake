@@ -390,7 +390,7 @@ process.binding = function (name) {
 require.define("/Game.js",function(require,module,exports,__dirname,__filename,process){"use strict";
 
 var Snake = require( './Snake.js' ),
-    Fruit = require( './Fruit.js' );
+    Food = require( './Food.js' );
 
 function Game( ctx ) {
     this.score = 0;
@@ -415,11 +415,24 @@ Game.prototype = {
             '40': 'bottom'
         };
 
+        // Spawn a new food
+        this.food = new Food( this.ctx, this );
+
         // Spawn a new snake
         this.snake = new Snake( this.ctx, this );
 
-        // Spawn a new fruit
-        this.fruit = new Fruit( this.ctx, this );
+        var that = this;
+        // Listen for when a snake eats a food
+        this.evt.on( 'I ate some food', function() {
+            // Increase the score
+            that.score++;
+
+            // Clear the current food
+            that.food.clear();
+
+            // And spawn a new one
+            that.food = new Food( that.ctx, that );
+        });
 
         // Add the event listener on the arrow keys
         window.addEventListener( 'keydown', handleKeys.bind( this ) );
@@ -427,7 +440,7 @@ Game.prototype = {
 
     stop: function( reqID ) {
         window.cancelAnimationFrame( reqID );
-        alert( 'Game over!' );
+        alert( 'Game over! You got ' + this.score + ' points!' );
     }
 };
 
@@ -462,7 +475,8 @@ Snake.prototype = {
         for ( var i = 0; i < this.length; i++ ) {
             pos.push( {
                 x: 150 + i,
-                y: 150
+                y: 150,
+                dir: this.direction
             });
         }
         return pos;
@@ -497,6 +511,8 @@ Snake.prototype = {
             dir = this.direction,
             thickness = this.game.thickness,
             pos = this.pos,
+            evt = this.game.evt,
+            food = this.game.food,
             lastX,
             lastY;
 
@@ -524,12 +540,13 @@ Snake.prototype = {
             }
         };
 
-        mapDir[ dir ].call( this );
+        mapDir[ dir ].call( this );//{{{
 
         // Add the last element to the position array
         pos.push( {
             x: lastX,
-            y: lastY
+            y: lastY,
+            dir: dir
         });
 
         // Draw the last element
@@ -540,12 +557,57 @@ Snake.prototype = {
         var firstElem = pos.shift();
         ctx.clearRect( firstElem.x, firstElem.y, thickness, thickness );
 
+        // Check if we're eating a food
+        if (
+            ( lastElem.x >= food.x && lastElem.x <= food.x + 5 ) ||
+            ( lastElem.y >= food.y && lastElem.y <= food.y + 5 )
+        ) {
+            evt.emit( 'I ate some food' );
+
+            // We need to add 10 to the length
+            this.length += 10;
+
+            // And also to the pos array
+            for ( var i = 0; i < 10; i++ ) {
+                switch( pos[ 0 ].dir ) {
+                case 'top':
+                    pos.unshift( {
+                        x: pos[ 0 ].x,
+                        y: pos[ 0 ].y + i + this.speed,
+                        dir: 'top'
+                    });
+                    break;
+                case 'right':
+                    pos.unshift( {
+                        x: pos[ 0 ] - i - this.speed,
+                        y: pos[ 0 ],
+                        dir: 'right'
+                    });
+                    break;
+                case 'bottom':
+                    pos.unshift( {
+                        x: pos[ 0 ],
+                        y: pos[ 0 ] - i - this.speed,
+                        dir: 'right'
+                    });
+                    break;
+                case 'left':
+                    pos.unshift( {
+                        x: pos[ 0 ] + i + this.speed,
+                        y: pos[ 0 ],
+                        dir: 'right'
+                    });
+                    break;
+                }
+            }
+        }
+
 
         // Check if we're out of bounds
         var lastPos = pos[ pos.length -1 ];
         if (
-            ( lastPos.x < 1 || lastPos.x > 299 ) ||
-            ( lastPos.y < 1 || lastPos.y > 299 )
+            ( lastPos.x < 1 || lastPos.x > ctx.canvas.width - 1 ) ||
+            ( lastPos.y < 1 || lastPos.y > ctx.canvas.height - 1 )
         ) {
             this.game.stop( this.reqID );
         }
@@ -557,22 +619,39 @@ module.exports = Snake;
 
 });
 
-require.define("/Fruit.js",function(require,module,exports,__dirname,__filename,process){"use strict";
+require.define("/Food.js",function(require,module,exports,__dirname,__filename,process){"use strict";
 
-function Fruit( ctx, game ) {
+function Food( ctx, game ) {
     this.ctx = ctx;
     this.game = game;
     this.draw();
 }
 
-Fruit.prototype = {
-    constructor: Fruit,
+Food.prototype = {
+    constructor: Food,
 
     draw: function() {
+        var ctx = this.ctx,
+            cvs = ctx.canvas,
+            thickness = this.game.thickness;
+
+        // Randomly get a position
+        this.x = Math.random() * ( cvs.width - 1 ) + 1;
+        this.y = Math.random() * ( cvs.height - 1 ) + 1;
+
+        // And add the food to this position
+        ctx.fillRect( this.x, this.y, thickness, thickness );
+    },
+
+    clear: function() {
+        var ctx = this.ctx,
+            thickness = this.game.thickness;
+
+        ctx.clearRect( this.x - 1, this.y - 1, thickness + 3, thickness + 3 );
     }
 };
 
-module.exports = Fruit;
+module.exports = Food;
 
 
 });
@@ -756,8 +835,8 @@ require.define("/main.js",function(require,module,exports,__dirname,__filename,p
 var cvs = document.getElementById( 'cvs' ),
     ctx = cvs.getContext( '2d' );
 
-var width = 300,
-    height = 300;
+var width = 200,
+    height = 200;
 
 // Set the properties of the canvas
 cvs.width = width;

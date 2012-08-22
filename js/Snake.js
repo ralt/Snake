@@ -18,8 +18,9 @@ Snake.prototype = {
         var pos = [];
         for ( var i = 0; i < this.length; i++ ) {
             pos.push( {
-                x: 150 + i,
-                y: 150
+                x: ( this.ctx.canvas.width / 2 ) + i,
+                y: this.ctx.canvas.height / 2,
+                dir: this.direction
             });
         }
         return pos;
@@ -54,6 +55,8 @@ Snake.prototype = {
             dir = this.direction,
             thickness = this.game.thickness,
             pos = this.pos,
+            evt = this.game.evt,
+            food = this.game.food,
             lastX,
             lastY;
 
@@ -81,12 +84,13 @@ Snake.prototype = {
             }
         };
 
-        mapDir[ dir ].call( this );
+        mapDir[ dir ].call( this );//{{{
 
         // Add the last element to the position array
         pos.push( {
             x: lastX,
-            y: lastY
+            y: lastY,
+            dir: dir
         });
 
         // Draw the last element
@@ -97,12 +101,63 @@ Snake.prototype = {
         var firstElem = pos.shift();
         ctx.clearRect( firstElem.x, firstElem.y, thickness, thickness );
 
+        // Check if we're eating a food
+        if (
+            ( lastElem.x >= food.x && lastElem.x <= food.x + 5 ) ||
+            ( lastElem.y >= food.y && lastElem.y <= food.y + 5 )
+        ) {
+            evt.emit( 'I ate some food' );
+
+            // We need to add 10 to the length
+            this.length += 10;
+
+            // And also to the pos array
+            for ( var i = 0; i < 10; i++ ) {
+                switch( pos[ 0 ].dir ) {
+                case 'top':
+                    pos.unshift( {
+                        x: pos[ 0 ].x,
+                        y: pos[ 0 ].y + i + this.speed,
+                        dir: 'top'
+                    });
+                    break;
+                case 'right':
+                    pos.unshift( {
+                        x: pos[ 0 ] - i - this.speed,
+                        y: pos[ 0 ],
+                        dir: 'right'
+                    });
+                    break;
+                case 'bottom':
+                    pos.unshift( {
+                        x: pos[ 0 ],
+                        y: pos[ 0 ] - i - this.speed,
+                        dir: 'right'
+                    });
+                    break;
+                case 'left':
+                    pos.unshift( {
+                        x: pos[ 0 ] + i + this.speed,
+                        y: pos[ 0 ],
+                        dir: 'right'
+                    });
+                    break;
+                }
+            }
+        }
+
+        // Check if we're eating our own tail
+        pos.forEach( function( p ) {
+            if ( p.x === lastElem.x || p.y === lastElem.y )
+                this.game.stop( this.reqID );
+            }
+        }, this );
 
         // Check if we're out of bounds
         var lastPos = pos[ pos.length -1 ];
         if (
-            ( lastPos.x < 1 || lastPos.x > 299 ) ||
-            ( lastPos.y < 1 || lastPos.y > 299 )
+            ( lastPos.x < 1 || lastPos.x > ctx.canvas.width - 1 ) ||
+            ( lastPos.y < 1 || lastPos.y > ctx.canvas.height - 1 )
         ) {
             this.game.stop( this.reqID );
         }
