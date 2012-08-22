@@ -23,7 +23,7 @@ define( function() {
         },
 
         draw: function() {
-            window.requestAnimationFrame( this.draw.bind( this ) );
+            var reqId = window.requestAnimationFrame( this.draw.bind( this ) );
 
             this.ctx.beginPath();
             this.ctx.moveTo( this.pos.x, this.pos.y );
@@ -58,7 +58,7 @@ define( function() {
                 this.pos.y === 0 ||
                 this.pos.x === 300 ||
                 this.pos.y === 300 ) {
-                this.game.stop();
+                this.game.stop( reqId );
             }
         }
     };

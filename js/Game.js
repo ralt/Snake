@@ -26,8 +26,9 @@ define( [ 'Snake', 'Fruit' ], function( Snake, Fruit ) {
             window.addEventListener( 'keydown', handleKeys.bind( this ) );
         },
 
-        stop: function() {
-            throw new Error( 'Game over!' );
+        stop: function( reqID ) {
+            window.cancelAnimationFrame( reqID );
+            console.log( 'Game over!' );
         }
     };
 

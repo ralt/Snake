@@ -1,3 +1,6 @@
 {
-    "browser": true
+    "browser": true,
+    "devel": true,
+    "es5": true,
+    "strict": true
 }
