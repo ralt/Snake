@@ -395,6 +395,7 @@ var Snake = require( './Snake.js' ),
 function Game( ctx ) {
     this.score = 0;
     this.ctx = ctx;
+    this.thickness = 5;
 }
 
 Game.prototype = {
@@ -440,6 +441,8 @@ function Snake( ctx, game ) {
     this.length = 30;
     this.speed = 1;
     this.direction = 'right';
+    this.sWidth = 5;
+    this.sHeight = 5;
     this.game = game;
     this.pos = this.build();
     this.draw();
@@ -476,6 +479,7 @@ Snake.prototype = {
         var ctx = this.ctx,
             board = this.game.board,
             dir = this.direction,
+            thickness = this.game.thickness,
             pos = this.pos;
 
         this.reqID = window.requestAnimationFrame(
@@ -492,7 +496,6 @@ Snake.prototype = {
                     x: pos[ pos.length - 1 ].x,
                     y: pos[ pos.length - 1 ].y - this.speed,
                 });
-                pos.shift();
             },
             'right': function() {
                 var pos = this.pos;
@@ -500,7 +503,6 @@ Snake.prototype = {
                     x: pos[ pos.length - 1 ].x + this.speed,
                     y: pos[ pos.length - 1 ].y,
                 });
-                pos.shift();
             },
             'bottom': function() {
                 var pos = this.pos;
@@ -508,7 +510,6 @@ Snake.prototype = {
                     x: pos[ pos.length - 1 ].x,
                     y: pos[ pos.length - 1 ].y + this.speed,
                 });
-                pos.shift();
             },
             'left': function() {
                 var pos = this.pos;
@@ -516,18 +517,18 @@ Snake.prototype = {
                     x: pos[ pos.length - 1 ].x - this.speed,
                     y: pos[ pos.length - 1 ].y,
                 });
-                pos.shift();
             }
         };
 
         mapDir[ dir ].call( this );
+        pos.shift();
 
         // Clear the canvas
         ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height );
 
         // And draw each element of the pos array
         pos.forEach( function( p ) {
-            ctx.fillRect( p.x, p.y, 5, 5 );
+            ctx.fillRect( p.x, p.y, thickness, thickness );
         }, this );
 
         // Check if we're out of bounds

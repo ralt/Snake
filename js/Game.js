@@ -6,6 +6,7 @@ var Snake = require( './Snake.js' ),
 function Game( ctx ) {
     this.score = 0;
     this.ctx = ctx;
+    this.thickness = 5;
 }
 
 Game.prototype = {
