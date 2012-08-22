@@ -5,10 +5,9 @@ function Snake( ctx, game ) {
     this.length = 30;
     this.speed = 1;
     this.direction = 'right';
-    this.sWidth = 5;
-    this.sHeight = 5;
     this.game = game;
     this.pos = this.build();
+    this.drawFirst();
     this.draw();
 }
 
@@ -24,6 +23,16 @@ Snake.prototype = {
             });
         }
         return pos;
+    },
+
+    drawFirst: function() {
+        var pos = this.pos,
+            ctx = this.ctx,
+            thickness = this.game.thickness;
+
+        pos.forEach( function( p ) {
+            ctx.fillRect( p.x, p.y, thickness, thickness );
+        }, this );
     },
 
     move: function( direction ) {
@@ -44,56 +53,50 @@ Snake.prototype = {
             board = this.game.board,
             dir = this.direction,
             thickness = this.game.thickness,
-            pos = this.pos;
+            pos = this.pos,
+            lastX,
+            lastY;
 
         this.reqID = window.requestAnimationFrame(
             this.draw.bind( this )
         );
 
-        var that = this;
-
         // Add the next position
         var mapDir = {
             'top': function() {
-                var pos = this.pos;
-                pos.push( {
-                    x: pos[ pos.length - 1 ].x,
-                    y: pos[ pos.length - 1 ].y - this.speed,
-                });
+                lastX = pos[ pos.length - 1 ].x,
+                lastY = pos[ pos.length - 1 ].y - this.speed;
             },
             'right': function() {
-                var pos = this.pos;
-                pos.push( {
-                    x: pos[ pos.length - 1 ].x + this.speed,
-                    y: pos[ pos.length - 1 ].y,
-                });
+                lastX = pos[ pos.length - 1 ].x + this.speed,
+                lastY = pos[ pos.length - 1 ].y;
             },
             'bottom': function() {
-                var pos = this.pos;
-                pos.push( {
-                    x: pos[ pos.length - 1 ].x,
-                    y: pos[ pos.length - 1 ].y + this.speed,
-                });
+                lastX = pos[ pos.length - 1 ].x,
+                lastY = pos[ pos.length - 1 ].y + this.speed;
             },
             'left': function() {
-                var pos = this.pos;
-                pos.push( {
-                    x: pos[ pos.length - 1 ].x - this.speed,
-                    y: pos[ pos.length - 1 ].y,
-                });
+                lastX = pos[ pos.length - 1 ].x - this.speed,
+                lastY = pos[ pos.length - 1 ].y;
             }
         };
 
         mapDir[ dir ].call( this );
-        pos.shift();
 
-        // Clear the canvas
-        ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height );
+        // Add the last element to the position array
+        pos.push( {
+            x: lastX,
+            y: lastY
+        });
 
-        // And draw each element of the pos array
-        pos.forEach( function( p ) {
-            ctx.fillRect( p.x, p.y, thickness, thickness );
-        }, this );
+        // Draw the last element
+        var lastElem = pos[ pos.length - 1 ];
+        ctx.fillRect( lastElem.x, lastElem.y, thickness, thickness );
+
+        // Remove the first element and clear it from the canvas
+        var firstElem = pos.shift();
+        ctx.clearRect( firstElem.x, firstElem.y, thickness, thickness );
+
 
         // Check if we're out of bounds
         var lastPos = pos[ pos.length -1 ];
