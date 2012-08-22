@@ -1,12 +1,10 @@
-define( function() {
-    "use strict";
+"use strict";
 
-    function Fruit() {}
+function Fruit() {}
 
-    Fruit.prototype = {
-        constructor: Fruit
-    };
+Fruit.prototype = {
+    constructor: Fruit
+};
 
-    return Fruit;
-} );
+module.exports = Fruit;
 

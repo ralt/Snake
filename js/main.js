@@ -1,24 +1,20 @@
-require( [ 'Game' ], function( Game ) {
-    "use strict";
+"use strict";
 
-    var cvs = document.getElementById( 'cvs' ),
-        ctx = cvs.getContext( '2d' );
+var cvs = document.getElementById( 'cvs' ),
+    ctx = cvs.getContext( '2d' );
 
-    var width = 300,
-        height = 300;
+var width = 300,
+    height = 300;
 
-    // Set the properties of the canvas
-    cvs.width = width;
-    cvs.height = height;
+// Set the properties of the canvas
+cvs.width = width;
+cvs.height = height;
 
-    // And its border
-    ctx.strokeStyle = '#000';
-    ctx.strokeRect( 0, 0, width, height );
+var Game = require( './Game' );
 
-    // Spawn a new game
-    var game = new Game( ctx );
+// Spawn a new game
+var game = new Game( ctx );
 
-    // And start the game
-    game.start();
-} );
+// And start the game
+game.start();
 
