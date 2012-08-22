@@ -397,6 +397,7 @@ function Game( ctx ) {
     this.ctx = ctx;
 
     // Build the board
+    this.board = [];
     this.buildBoard();
 }
 
@@ -408,7 +409,6 @@ Game.prototype = {
             height = this.ctx.canvas.height,
             arr = [];
 
-        this.board = [];
 
         while( width-- ) {
             arr.push( 0 );
@@ -437,7 +437,7 @@ Game.prototype = {
 
     stop: function( reqID ) {
         window.cancelAnimationFrame( reqID );
-        console.log( 'Game over!' );
+        alert( 'Game over!' );
     }
 };
 
@@ -483,14 +483,24 @@ Snake.prototype = {
     },
 
     move: function( direction ) {
+        // Check for errors
+        if (
+            ( this.direction === 'left' && direction === 'right' ) ||
+            ( this.direction === 'right' && direction === 'left' ) ||
+            ( this.direction === 'top' && direction === 'bottom' ) ||
+            ( this.direction === 'bottom' && direction === 'top' )
+        ) {
+            this.game.stop( this.reqID );
+        }
         this.direction = direction;
     },
 
     draw: function() {
         var ctx = this.ctx,
             board = this.game.board,
-            pos = this.pos,
-            reqID = window.requestAnimationFrame(
+            pos = this.pos;
+
+        this.reqID = window.requestAnimationFrame(
             this.draw.bind( this )
         );
 
@@ -498,8 +508,8 @@ Snake.prototype = {
         switch( this.direction ) {
         case 'top':
             board[ pos.startX ][ pos.startY ] = 0;
-            pos.startY++;
-            pos.endY++;
+            pos.startY--;
+            pos.endY--;
             board[ pos.startX ][ pos.endY ] = 1;
             break;
         case 'right':
@@ -510,8 +520,8 @@ Snake.prototype = {
             break;
         case 'bottom':
             board[ pos.startX ][ pos.startY ] = 0;
-            pos.startY--;
-            pos.endY--;
+            pos.startY++;
+            pos.endY++;
             board[ pos.startX ][ pos.endY ] = 1;
             break;
         case 'left':
@@ -544,7 +554,7 @@ Snake.prototype = {
         Object.keys( pos ).forEach( function( key ) {
             if ( pos[ key ] <= 1 ||
                 pos[ key ] >= ctx.canvas.width - 1 ) {
-                this.game.stop( reqID );
+                this.game.stop( this.reqID );
             }
         }, this );
     }

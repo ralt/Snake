@@ -8,6 +8,7 @@ function Game( ctx ) {
     this.ctx = ctx;
 
     // Build the board
+    this.board = [];
     this.buildBoard();
 }
 
@@ -19,7 +20,6 @@ Game.prototype = {
             height = this.ctx.canvas.height,
             arr = [];
 
-        this.board = [];
 
         while( width-- ) {
             arr.push( 0 );
@@ -48,7 +48,7 @@ Game.prototype = {
 
     stop: function( reqID ) {
         window.cancelAnimationFrame( reqID );
-        console.log( 'Game over!' );
+        alert( 'Game over!' );
     }
 };
 
