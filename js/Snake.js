@@ -2,7 +2,8 @@
 
 function Snake( ctx, game ) {
     this.ctx = ctx;
-    this.length = 10;
+    this.length = 30;
+    this.speed = 1;
     this.direction = 'right';
     this.game = game;
     this.pos = this.build();
@@ -54,14 +55,14 @@ Snake.prototype = {
                 var pos = this.pos;
                 pos.push( {
                     x: pos[ pos.length - 1 ].x,
-                    y: pos[ pos.length - 1 ].y - 1,
+                    y: pos[ pos.length - 1 ].y - this.speed,
                 });
                 pos.shift();
             },
             'right': function() {
                 var pos = this.pos;
                 pos.push( {
-                    x: pos[ pos.length - 1 ].x + 1,
+                    x: pos[ pos.length - 1 ].x + this.speed,
                     y: pos[ pos.length - 1 ].y,
                 });
                 pos.shift();
@@ -70,14 +71,14 @@ Snake.prototype = {
                 var pos = this.pos;
                 pos.push( {
                     x: pos[ pos.length - 1 ].x,
-                    y: pos[ pos.length - 1 ].y + 1,
+                    y: pos[ pos.length - 1 ].y + this.speed,
                 });
                 pos.shift();
             },
             'left': function() {
                 var pos = this.pos;
                 pos.push( {
-                    x: pos[ pos.length - 1 ].x - 1,
+                    x: pos[ pos.length - 1 ].x - this.speed,
                     y: pos[ pos.length - 1 ].y,
                 });
                 pos.shift();
@@ -91,7 +92,7 @@ Snake.prototype = {
 
         // And draw each element of the pos array
         pos.forEach( function( p ) {
-            ctx.fillRect( p.x, p.y, 1, 1 );
+            ctx.fillRect( p.x, p.y, 5, 5 );
         }, this );
 
         // Check if we're out of bounds
