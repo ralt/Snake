@@ -13,6 +13,10 @@ Game.prototype = {
     constructor: Game,
 
     start: function() {
+        // Create an event object
+        var EventEmitter = require( 'events' ).EventEmitter;
+        this.evt = new EventEmitter;
+
         // Have a mapping object and pass the correct string
         // to the snake
         this.keyCodes = {
@@ -24,6 +28,9 @@ Game.prototype = {
 
         // Spawn a new snake
         this.snake = new Snake( this.ctx, this );
+
+        // Spawn a new fruit
+        this.fruit = new Fruit( this.ctx, this );
 
         // Add the event listener on the arrow keys
         window.addEventListener( 'keydown', handleKeys.bind( this ) );
