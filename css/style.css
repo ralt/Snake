@@ -13,5 +13,6 @@
 #cvs {
     display: block;
     margin: auto;
+    border: 1px solid;
 }
 

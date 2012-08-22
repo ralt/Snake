@@ -3,7 +3,7 @@ define( function() {
 
     function Snake( ctx, game ) {
         this.ctx = ctx;
-        this.length = 1;
+        this.length = 50;
         this.pos = {
             x: 150,
             y: 150
@@ -23,42 +23,51 @@ define( function() {
         },
 
         draw: function() {
-            var reqId = window.requestAnimationFrame( this.draw.bind( this ) );
+            var ctx = this.ctx,
+                pos = this.pos,
+                reqID = window.requestAnimationFrame(
+                this.draw.bind( this )
+            );
 
-            this.ctx.beginPath();
-            this.ctx.moveTo( this.pos.x, this.pos.y );
+            // Clear the canvas
+            ctx.clearRect( 0, 0, 300, 300 );
+
+            // Draw the next position
+            ctx.beginPath();
+            ctx.lineWidth = 4;
+            ctx.moveTo( pos.x, pos.y );
 
             switch( this.direction ) {
 
             case 'left':
-                this.ctx.lineTo( this.pos.x - this.length, this.pos.y );
-                this.pos.x -= 1;
+                ctx.lineTo( pos.x - this.length, pos.y );
+                pos.x -= 1;
                 break;
 
             case 'top':
-                this.ctx.lineTo( this.pos.x, this.pos.y + this.length );
-                this.pos.y -= 1;
+                ctx.lineTo( pos.x, pos.y + this.length );
+                pos.y -= 1;
                 break;
 
             case 'right':
-                this.ctx.lineTo( this.pos.x + this.length, this.pos.y );
-                this.pos.x += 1;
+                ctx.lineTo( pos.x + this.length, pos.y );
+                pos.x += 1;
                 break;
 
             case 'bottom':
-                this.ctx.lineTo( this.pos.x, this.pos.y - this.length );
-                this.pos.y += 1;
+                ctx.lineTo( pos.x, pos.y - this.length );
+                pos.y += 1;
                 break;
             }
 
-            this.ctx.stroke();
-            this.ctx.closePath();
+            ctx.stroke();
+            ctx.closePath();
 
             if ( this.pos.x === 0 ||
                 this.pos.y === 0 ||
                 this.pos.x === 300 ||
                 this.pos.y === 300 ) {
-                this.game.stop( reqId );
+                this.game.stop( reqID );
             }
         }
     };
