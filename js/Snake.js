@@ -3,7 +3,7 @@ define( function() {
 
     function Snake( ctx, game ) {
         this.ctx = ctx;
-        this.length = 50;
+        this.length = 10;
         this.pos = {
             x: 150,
             y: 150
@@ -34,7 +34,7 @@ define( function() {
 
             // Draw the next position
             ctx.beginPath();
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 1;
             ctx.moveTo( pos.x, pos.y );
 
             switch( this.direction ) {
