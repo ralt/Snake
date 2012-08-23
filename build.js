@@ -27,8 +27,16 @@ function readFiles(dir) {
 }
 
 function build() {
-    console.log("A change happened. Rebuilding.")
-    child_process.exec("browserify -e js/main.js -o bundle.js")
+    var command = "browserify -e js/main.js -o bundle.js";
+    child_process.exec( command,
+        function( err, stdout, stderr ) {
+        if ( err ) {
+            console.error( err );
+        }
+        else {
+            console.log( 'Rebuilt.' );
+        }
+    });
 }
 
 readFiles(clientModules)

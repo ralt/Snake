@@ -439,9 +439,23 @@ Game.prototype = {
     },
 
     stop: function( reqID ) {
+        var cvs = this.ctx.canvas;
         window.cancelAnimationFrame( reqID );
         window.removeEventListener( this.handleKeys );
+        this.ctx.clearRect( 0, 0, cvs.width, cvs.height );
         alert( 'Game over! You got ' + this.score + ' points!' );
+        this.restart();
+    },
+
+    restart: function() {
+        var that = this
+        var button = document.createElement( 'button' );
+        button.textContent = 'Restart the game';
+        button.addEventListener( 'click', function() {
+            that.start();
+            this.parentNode.removeChild( this );
+        }, false );
+        document.body.appendChild( button );
     }
 };
 
