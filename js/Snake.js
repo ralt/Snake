@@ -19,7 +19,7 @@ Snake.prototype = {
         for ( var i = 0; i < this.length; i++ ) {
             pos.push( {
                 x: ( this.ctx.canvas.width / 2 ) + i,
-                y: this.ctx.canvas.height / 2,
+                y: ( this.ctx.canvas.height / 2 ),
                 dir: this.direction
             });
         }
@@ -147,11 +147,11 @@ Snake.prototype = {
         }
 
         // Check if we're eating our own tail
-        pos.forEach( function( p ) {
-            if ( p.x === lastElem.x || p.y === lastElem.y )
-                this.game.stop( this.reqID );
-            }
-        }, this );
+        //pos.some( function( p ) {
+        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
+        //        this.game.stop( this.reqID );
+        //    }
+        //}, this );
 
         // Check if we're out of bounds
         var lastPos = pos[ pos.length -1 ];

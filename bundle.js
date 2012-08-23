@@ -435,11 +435,12 @@ Game.prototype = {
         });
 
         // Add the event listener on the arrow keys
-        window.addEventListener( 'keydown', handleKeys.bind( this ) );
+        this.handleKeys = window.addEventListener( 'keydown', handleKeys.bind( this ) );
     },
 
     stop: function( reqID ) {
         window.cancelAnimationFrame( reqID );
+        window.removeEventListener( this.handleKeys );
         alert( 'Game over! You got ' + this.score + ' points!' );
     }
 };
@@ -474,8 +475,8 @@ Snake.prototype = {
         var pos = [];
         for ( var i = 0; i < this.length; i++ ) {
             pos.push( {
-                x: 150 + i,
-                y: 150,
+                x: ( this.ctx.canvas.width / 2 ) + i,
+                y: ( this.ctx.canvas.height / 2 ),
                 dir: this.direction
             });
         }
@@ -602,6 +603,12 @@ Snake.prototype = {
             }
         }
 
+        // Check if we're eating our own tail
+        //pos.some( function( p ) {
+        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
+        //        this.game.stop( this.reqID );
+        //    }
+        //}, this );
 
         // Check if we're out of bounds
         var lastPos = pos[ pos.length -1 ];
@@ -835,8 +842,8 @@ require.define("/main.js",function(require,module,exports,__dirname,__filename,p
 var cvs = document.getElementById( 'cvs' ),
     ctx = cvs.getContext( '2d' );
 
-var width = 200,
-    height = 200;
+var width = 300,
+    height = 300;
 
 // Set the properties of the canvas
 cvs.width = width;

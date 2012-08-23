@@ -46,11 +46,12 @@ Game.prototype = {
         });
 
         // Add the event listener on the arrow keys
-        window.addEventListener( 'keydown', handleKeys.bind( this ) );
+        this.handleKeys = window.addEventListener( 'keydown', handleKeys.bind( this ) );
     },
 
     stop: function( reqID ) {
         window.cancelAnimationFrame( reqID );
+        window.removeEventListener( this.handleKeys );
         alert( 'Game over! You got ' + this.score + ' points!' );
     }
 };
