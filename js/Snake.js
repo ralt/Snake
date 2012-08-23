@@ -98,17 +98,12 @@ Snake.prototype = {
 
         // Remove the first element and clear it from the canvas
         var firstElem = pos.shift();
-        ctx.clearRect( firstElem.x, firstElem.y, thickness, thickness );
+        ctx.clearRect( firstElem.x - this.speed, firstElem.y - this.speed, thickness + this.speed + 1, thickness + this.speed + 1 );
 
         // Check if we're eating a food
         this.detectFood();
 
         // Check if we're eating our own tail
-        //pos.some( function( p ) {
-        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
-        //        this.game.stop( this.reqID );
-        //    }
-        //}, this );
 
         // Check if we're out of bounds
         if (
@@ -127,13 +122,17 @@ Snake.prototype = {
 
         // Check if we're eating a food
         if (
-            ( lastElem.x >= food.x && lastElem.x <= food.x + 5 ) ||
-            ( lastElem.y >= food.y && lastElem.y <= food.y + 5 )
+            // Allow 3 pixels of error
+            ( lastElem.x >= food.x - 3 && lastElem.x <= food.x + 8 ) &&
+            ( lastElem.y >= food.y - 3 && lastElem.y <= food.y + 8 )
         ) {
             evt.emit( 'I ate some food' );
 
             // We need to add 10 to the length
             this.length += 10;
+
+            // And 0.2 to its speed
+            this.speed += 0.2;
 
             // And also to the pos array
             for ( var i = 0; i < 10; i++ ) {

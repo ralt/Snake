@@ -55,7 +55,7 @@ Game.prototype = {
         var cvs = this.ctx.canvas;
         window.cancelAnimationFrame( reqID );
         window.removeEventListener( this.keyEvt );
-        this.ctx.clearRect( 0, 0, cvs.width, cvs.height );
+        //this.ctx.clearRect( 0, 0, cvs.width, cvs.height );
         alert( 'Game over! You got ' + this.score + ' points!' );
         this.restart();
     },
