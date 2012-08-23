@@ -460,7 +460,9 @@ Game.prototype = {
     },
 
     handleKeys: function( e ) {
-        that.snake.move( that.keyCodes[ e.keyCode ] );
+        if ( that.keyCodes[ e.keyCode ] ) {
+            that.snake.move( that.keyCodes[ e.keyCode ] );
+        }
     }
 };
 
