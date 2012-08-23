@@ -667,8 +667,8 @@ Food.prototype = {
             thickness = this.game.thickness;
 
         // Randomly get a position
-        this.x = Math.random() * ( cvs.width - 1 ) + 1;
-        this.y = Math.random() * ( cvs.height - 1 ) + 1;
+        this.x = Math.random() * ( cvs.width - 5 ) + 1;
+        this.y = Math.random() * ( cvs.height - 5 ) + 1;
 
         // And add the food to this position
         ctx.fillRect( this.x, this.y, thickness, thickness );
