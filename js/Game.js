@@ -1,7 +1,8 @@
 "use strict";
 
 var Snake = require( './Snake.js' ),
-    Food = require( './Food.js' );
+    Food = require( './Food.js' ),
+    that;
 
 function Game( ctx ) {
     this.score = 0;
@@ -13,6 +14,8 @@ Game.prototype = {
     constructor: Game,
 
     start: function() {
+        that = this;
+
         // Create an event object
         var EventEmitter = require( 'events' ).EventEmitter;
         this.evt = new EventEmitter;
@@ -32,7 +35,6 @@ Game.prototype = {
         // Spawn a new snake
         this.snake = new Snake( this.ctx, this );
 
-        var that = this;
         // Listen for when a snake eats a food
         this.evt.on( 'I ate some food', function() {
             // Increase the score
@@ -46,34 +48,33 @@ Game.prototype = {
         });
 
         // Add the event listener on the arrow keys
-        this.handleKeys = window.addEventListener( 'keydown', handleKeys.bind( this ) );
+        this.keyEvt = window.addEventListener( 'keydown', this.handleKeys );
     },
 
     stop: function( reqID ) {
         var cvs = this.ctx.canvas;
         window.cancelAnimationFrame( reqID );
-        window.removeEventListener( this.handleKeys );
+        window.removeEventListener( this.keyEvt );
         this.ctx.clearRect( 0, 0, cvs.width, cvs.height );
         alert( 'Game over! You got ' + this.score + ' points!' );
         this.restart();
     },
 
     restart: function() {
-        var that = this
         var button = document.createElement( 'button' );
         button.textContent = 'Restart the game';
         button.addEventListener( 'click', function() {
-            that.start();
             this.parentNode.removeChild( this );
+            that.start();
         }, false );
         document.body.appendChild( button );
+    },
+
+    handleKeys: function( e ) {
+        that.snake.move( that.keyCodes[ e.keyCode ] );
     }
 };
 
-function handleKeys( e ) {
-    /*jshint validthis:true*/
-    this.snake.move( this.keyCodes[ e.keyCode ] );
-}
 
 module.exports = Game;
 

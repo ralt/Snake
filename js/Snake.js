@@ -55,7 +55,6 @@ Snake.prototype = {
             dir = this.direction,
             thickness = this.game.thickness,
             pos = this.pos,
-            evt = this.game.evt,
             food = this.game.food,
             lastX,
             lastY;
@@ -102,6 +101,31 @@ Snake.prototype = {
         ctx.clearRect( firstElem.x, firstElem.y, thickness, thickness );
 
         // Check if we're eating a food
+        this.detectFood();
+
+        // Check if we're eating our own tail
+        //pos.some( function( p ) {
+        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
+        //        this.game.stop( this.reqID );
+        //    }
+        //}, this );
+
+        // Check if we're out of bounds
+        if (
+            ( lastElem.x < 1 || lastElem.x > ctx.canvas.width - 1 ) ||
+            ( lastElem.y < 1 || lastElem.y > ctx.canvas.height - 1 )
+        ) {
+            this.game.stop( this.reqID );
+        }
+    },
+
+    detectFood: function() {
+        var pos = this.pos,
+            lastElem = pos[ pos.length - 1 ],
+            food = this.game.food,
+            evt = this.game.evt;
+
+        // Check if we're eating a food
         if (
             ( lastElem.x >= food.x && lastElem.x <= food.x + 5 ) ||
             ( lastElem.y >= food.y && lastElem.y <= food.y + 5 )
@@ -144,22 +168,6 @@ Snake.prototype = {
                     break;
                 }
             }
-        }
-
-        // Check if we're eating our own tail
-        //pos.some( function( p ) {
-        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
-        //        this.game.stop( this.reqID );
-        //    }
-        //}, this );
-
-        // Check if we're out of bounds
-        var lastPos = pos[ pos.length -1 ];
-        if (
-            ( lastPos.x < 1 || lastPos.x > ctx.canvas.width - 1 ) ||
-            ( lastPos.y < 1 || lastPos.y > ctx.canvas.height - 1 )
-        ) {
-            this.game.stop( this.reqID );
         }
     }
 };

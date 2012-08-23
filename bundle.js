@@ -390,7 +390,8 @@ process.binding = function (name) {
 require.define("/Game.js",function(require,module,exports,__dirname,__filename,process){"use strict";
 
 var Snake = require( './Snake.js' ),
-    Food = require( './Food.js' );
+    Food = require( './Food.js' ),
+    that;
 
 function Game( ctx ) {
     this.score = 0;
@@ -402,6 +403,8 @@ Game.prototype = {
     constructor: Game,
 
     start: function() {
+        that = this;
+
         // Create an event object
         var EventEmitter = require( 'events' ).EventEmitter;
         this.evt = new EventEmitter;
@@ -421,7 +424,6 @@ Game.prototype = {
         // Spawn a new snake
         this.snake = new Snake( this.ctx, this );
 
-        var that = this;
         // Listen for when a snake eats a food
         this.evt.on( 'I ate some food', function() {
             // Increase the score
@@ -435,34 +437,33 @@ Game.prototype = {
         });
 
         // Add the event listener on the arrow keys
-        this.handleKeys = window.addEventListener( 'keydown', handleKeys.bind( this ) );
+        this.keyEvt = window.addEventListener( 'keydown', this.handleKeys );
     },
 
     stop: function( reqID ) {
         var cvs = this.ctx.canvas;
         window.cancelAnimationFrame( reqID );
-        window.removeEventListener( this.handleKeys );
+        window.removeEventListener( this.keyEvt );
         this.ctx.clearRect( 0, 0, cvs.width, cvs.height );
         alert( 'Game over! You got ' + this.score + ' points!' );
         this.restart();
     },
 
     restart: function() {
-        var that = this
         var button = document.createElement( 'button' );
         button.textContent = 'Restart the game';
         button.addEventListener( 'click', function() {
-            that.start();
             this.parentNode.removeChild( this );
+            that.start();
         }, false );
         document.body.appendChild( button );
+    },
+
+    handleKeys: function( e ) {
+        that.snake.move( that.keyCodes[ e.keyCode ] );
     }
 };
 
-function handleKeys( e ) {
-    /*jshint validthis:true*/
-    this.snake.move( this.keyCodes[ e.keyCode ] );
-}
 
 module.exports = Game;
 
@@ -526,7 +527,6 @@ Snake.prototype = {
             dir = this.direction,
             thickness = this.game.thickness,
             pos = this.pos,
-            evt = this.game.evt,
             food = this.game.food,
             lastX,
             lastY;
@@ -573,6 +573,31 @@ Snake.prototype = {
         ctx.clearRect( firstElem.x, firstElem.y, thickness, thickness );
 
         // Check if we're eating a food
+        this.detectFood();
+
+        // Check if we're eating our own tail
+        //pos.some( function( p ) {
+        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
+        //        this.game.stop( this.reqID );
+        //    }
+        //}, this );
+
+        // Check if we're out of bounds
+        if (
+            ( lastElem.x < 1 || lastElem.x > ctx.canvas.width - 1 ) ||
+            ( lastElem.y < 1 || lastElem.y > ctx.canvas.height - 1 )
+        ) {
+            this.game.stop( this.reqID );
+        }
+    },
+
+    detectFood: function() {
+        var pos = this.pos,
+            lastElem = pos[ pos.length - 1 ],
+            food = this.game.food,
+            evt = this.game.evt;
+
+        // Check if we're eating a food
         if (
             ( lastElem.x >= food.x && lastElem.x <= food.x + 5 ) ||
             ( lastElem.y >= food.y && lastElem.y <= food.y + 5 )
@@ -615,22 +640,6 @@ Snake.prototype = {
                     break;
                 }
             }
-        }
-
-        // Check if we're eating our own tail
-        //pos.some( function( p ) {
-        //    if ( p.x === lastElem.x || p.y === lastElem.y ) {
-        //        this.game.stop( this.reqID );
-        //    }
-        //}, this );
-
-        // Check if we're out of bounds
-        var lastPos = pos[ pos.length -1 ];
-        if (
-            ( lastPos.x < 1 || lastPos.x > ctx.canvas.width - 1 ) ||
-            ( lastPos.y < 1 || lastPos.y > ctx.canvas.height - 1 )
-        ) {
-            this.game.stop( this.reqID );
         }
     }
 };
